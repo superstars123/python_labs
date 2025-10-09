@@ -14,7 +14,7 @@ print(min_max([-5, -2, -9]))
 print(min_max([1.5, 2, 2.0, -3.1]))
 print(min_max([]))
 ```
-![ex01](scr\lab02\images\ex1.png)
+![ex01](scr/lab02/images/ex1.png)
 
 ### Задание 2
 ```python
@@ -27,7 +27,7 @@ print(unique_sorted([1.0, 1, 2.5, 2.5, 0]))
 
 ```
 
-![ex02](scr\lab02\images\ex2.png)
+![ex02](scr/lab02/images/ex2.png)
 
 
 ### Задание 3
@@ -47,7 +47,7 @@ print(flatten([[1], [], [2, 3]]))
 print(flatten([[1, 2], "ab"]))
 
 ```
-![ex03](scr\lab02\images\ex3.png)
+![ex03](scr/lab02/images/ex3.png)
 
 ### Задание 4
 ```python
@@ -77,7 +77,7 @@ print(transpose([[1, 2], [3, 4]]))
 print(transpose([]))
 print(transpose([[1, 2], [3]]))
 ```
-![ex04](scr\lab02\images\ex4.png)
+![ex04](scr/lab02/images/ex4.png)
 
 ### Задание 5
 ```python
@@ -91,7 +91,7 @@ print(row_sums([[-1, 1], [10, -10]]))
 print(row_sums([[0, 0], [0, 0]]))
 print(row_sums([[1, 2], [3]]))
 ```
-![ex05](scr\lab02\images\ex5.png)
+![ex05](scr/lab02/images/ex5.png)
 
 ### Задание 6
 ```python
@@ -120,7 +120,7 @@ print(col_sums([[-1, 1], [10, -10]]))
 print(col_sums([[0, 0], [0, 0]]))
 print(col_sums([[1, 2], [3]]))
 ```
-![ex06](scr\lab02\images\ex6.png)
+![ex06](scr/lab02/images/ex6.png)
 
 ### Задание 7
 ```python
@@ -149,4 +149,4 @@ print(format_record(c))
 print(format_record(d))
 print(format_record(x))
 ```
-![ex07](scr\lab02\images\exx7.png)
+![ex07](scr/lab02/images/exx7.png)
