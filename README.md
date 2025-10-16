@@ -248,4 +248,4 @@ def main():
 if __name__ == "__main__":  
     main()
 ```
-![Картинка 4](lab03\images\ex4.png)
+![Картинка 4](lab03/images/ex4.png)
