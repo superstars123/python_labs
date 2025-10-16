@@ -149,4 +149,70 @@ print(format_record(c))
 print(format_record(d))
 print(format_record(x))
 ```
-![ex07](scr/lab02/images/exx7.png)
+![ex07](scr/lab02/images/exx7.png)()
+
+
+
+## Лабораторная работа 3
+
+### normalize
+```python
+def normalize(text: str, *, casefold: bool = True, yo2e: bool = True) -> str:#casefold приводит к нижнему регистру
+    text = text.casefold()
+    if yo2e:
+        text = text.replace('ё', 'е').replace('Ё', 'Е')
+    text = text.replace('\t', ' ').replace('\r', ' ').replace('\n', ' ') #отступ,курсоср в начало сторки,переход на строку ниже
+    text = ' '.join(text.split()) #разбивает строку по пробелма и собирает обратно с одним пробелом 
+    text = text.strip() #удаляет пробелы в начале и конце строки
+    return text
+print(normalize("ПрИвЕт\nМИр\t")) 
+print(normalize("ёжик, Ёлка"))
+print(normalize("Hello\r\nWorld"))
+print(normalize("  двойные   пробелы  "))
+
+
+```
+![Картинка 1](lab03\images\ex1.png)
+
+### tokenize
+```python
+import re #библиотека для работы с регулярными выражениями
+def tokenize(text: str) -> list[str]:
+    return re.findall(r'\w+(?:-\w+)*', text)
+print(tokenize("привет мир"))
+print(tokenize("hello,world!!!"))
+print(tokenize("по-настоящему круто"))
+print(tokenize("2025 год"))
+print(tokenize("emoji 😀 не слово"))
+```
+    
+![Картинка 2](lab03\images\ex2.png)
+
+
+### count_freq + top_n
+```python
+def count_freq(tokens: list[str]) -> dict[str, int]:
+    cnt = {}  
+    for w in tokens:
+        cu = cnt.get(w, 0)
+        cnt[w] = cu + 1
+    return cnt
+def top_n(freq: dict[str, int], n: int = 5) -> list[tuple[str, int]]:
+    t = []
+    for w, count in freq.items():#получаем пары(слово,кол-во)
+        t.append((-count, w))#создаем кортеж(минус для сортировки)
+    t.sort()
+    result = []
+    for neg_count, w in t:
+        result.append((w, -neg_count))#(- для коспенсации пред минуса)
+    return result[:n]
+tok = ["a", "b", "a", "c", "b", "a"]
+freq = count_freq(tok)
+print(top_n(freq, n=2))
+tok_2 = ["bb", "aa", "bb", "aa", "cc"]
+freq_2 = count_freq(tok_2)
+print(top_n(freq_2, n=2))
+
+```
+![Картинка 3](lab03\images\ex3.png)
+
