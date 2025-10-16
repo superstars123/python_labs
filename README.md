@@ -172,7 +172,7 @@ print(normalize("  двойные   пробелы  "))
 
 
 ```
-![Картинка 1](lab03\images\ex1.png)
+![Картинка 1](lab03/images/ex1.png)
 
 ### tokenize
 ```python
@@ -186,7 +186,7 @@ print(tokenize("2025 год"))
 print(tokenize("emoji 😀 не слово"))
 ```
     
-![Картинка 2](lab03\images\ex2.png)
+![Картинка 2](lab03/images/ex2.png)
 
 
 ### count_freq + top_n
@@ -214,5 +214,6 @@ freq_2 = count_freq(tok_2)
 print(top_n(freq_2, n=2))
 
 ```
-![Картинка 3](lab03\images\ex3.png)
+![Картинка 3](lab03/images/ex3.png)
+
 
