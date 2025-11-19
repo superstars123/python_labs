@@ -421,3 +421,134 @@ csv_to_xlsx('C:/Users/1/python_labs/data/samples/people.csv', 'C:/Users/1/python
 ```
 ![Картинка 1](laba_5/image/image.png)
 ![Картинка 1](laba_5/image/ex2.2.png)
+# Лабораторная №6
+## Задание 1
+``` python
+import sys
+import os
+import argparse
+from lib.stats_text import stats_text
+
+def check_file(file_path: str) -> bool:
+    if not os.path.exists(file_path):
+        print(f"Ошибка: файл '{file_path}' не существует", file=sys.stderr)
+        return False
+    if not os.path.isfile(file_path):
+        print(f"Ошибка: '{file_path}' не является файлом", file=sys.stderr)
+        return False
+    return True
+
+def cat_command(input_file: str, number_lines: bool = False):
+    if not check_file(input_file):
+        sys.exit(1)
+        
+    with open(input_file, 'r', encoding='utf-8') as f:
+        for i, line in enumerate(f, 1): 
+            if number_lines:
+                print(f"{i:6d}  {line}", end='') 
+            else:
+                print(line, end='') 
+    
+
+def stats_command(input_file: str, top_n: int = 5):
+    if not check_file(input_file): 
+        sys.exit(1)
+    
+    if top_n <= 0:
+        print("Ошибка: значение --top должно быть положительным числом", file=sys.stderr)
+        sys.exit(1)
+    
+    with open(input_file, 'r', encoding='utf-8') as f:
+        text = f.read()
+        stats_text(text, top_n)
+
+def main():
+    parser = argparse.ArgumentParser(description="Лабораторная №6")
+    subparsers = parser.add_subparsers(dest="command")
+
+    cat_parser = subparsers.add_parser("cat", help="Вывести содержимое файла")
+    cat_parser.add_argument("--input", required=True) 
+    cat_parser.add_argument("-n", action="store_true", help="Нумеровать строки")
+
+    stats_parser = subparsers.add_parser("stats", help="Частоты слов")
+    stats_parser.add_argument("--input", required=True)
+    stats_parser.add_argument("--top", type=int, default=5) 
+
+    args = parser.parse_args() 
+    if args.command == "cat":
+        cat_command(args.input, args.n)
+    elif args.command == "stats":
+        stats_command(args.input, args.top)
+    else:
+        parser.print_help()
+        sys.exit(1)
+
+if __name__ == "__main__":
+    main()
+```
+![Картинка 1](laba_6/image/ex1.png)
+
+## Задание 2
+``` python
+import sys
+import argparse
+
+from lib.stats_text import csv_to_xlsx
+from lib.stats_text import json_to_csv
+from lib.stats_text import csv_to_json
+from cli_text import check_file
+
+
+def main():
+    parser = argparse.ArgumentParser(description="Конвертеры данных")
+    sub = parser.add_subparsers(dest="command", required=True) 
+    
+    p1 = sub.add_parser("json2csv")
+    p1.add_argument("--in", dest="input", required=True, help="Входной JSON файл")
+    p1.add_argument("--out", dest="output", required=True, help="Выходной CSV файл")
+
+    p2 = sub.add_parser("csv2json")
+    p2.add_argument("--in", dest="input", required=True, help="Входной CSV файл")
+    p2.add_argument("--out", dest="output", required=True, help="Выходной JSON файл")
+
+    p3 = sub.add_parser("csv2xlsx")
+    p3.add_argument("--in", dest="input", required=True, help="Входной CSV файл")
+    p3.add_argument("--out", dest="output", required=True, help="Выходной XLSX файл")
+    
+    args = parser.parse_args()
+
+    
+    if args.command == "json2csv":
+        if not check_file(args.input):
+            print(f"Ошибка: Файл {args.input} не существует или недоступен")
+            sys.exit(1)
+                
+        json_to_csv(args.input, args.output)
+        print(f"Успешно: JSON -> CSV")
+            
+    elif args.command == "csv2json":
+        if not check_file(args.input):
+            print(f"Ошибка: Файл {args.input} не существует или недоступен")
+            sys.exit(1)
+                
+        csv_to_json(args.input, args.output)
+        print(f"Успешно: CSV -> JSON")
+            
+    elif args.command == "csv2xlsx":
+        if not check_file(args.input):
+            print(f"Ошибка: Файл {args.input} не существует или недоступен")
+            sys.exit(1)
+                
+        csv_to_xlsx(args.input, args.output)
+        print(f"Успешно: CSV -> XLSX")
+            
+    else:
+        print("Ошибка: Неизвестная команда")
+        sys.exit(1)
+    return 0
+        
+
+if __name__ == "__main__":
+    main()
+```
+![Картинка 1](laba_6/image/ex2.2.png)
