@@ -433,7 +433,7 @@ def check_file(file_path: str) -> bool:
     if not os.path.exists(file_path):
         print(f"Ошибка: файл '{file_path}' не существует", file=sys.stderr)
         return False
-    if not os.path.isfile(file_path):
+    if not os.path.isfile(file_path):#проверяет, является ли путь именно файлом (а не директорией).
         print(f"Ошибка: '{file_path}' не является файлом", file=sys.stderr)
         return False
     return True
@@ -443,7 +443,7 @@ def cat_command(input_file: str, number_lines: bool = False):
         sys.exit(1)
         
     with open(input_file, 'r', encoding='utf-8') as f:
-        for i, line in enumerate(f, 1): 
+        for i, line in enumerate(f, 1):#перебирает строки файла, но начинает нумерацию с 1
             if number_lines:
                 print(f"{i:6d}  {line}", end='') 
             else:
@@ -463,18 +463,18 @@ def stats_command(input_file: str, top_n: int = 5):
         stats_text(text, top_n)
 
 def main():
-    parser = argparse.ArgumentParser(description="Лабораторная №6")
-    subparsers = parser.add_subparsers(dest="command")
+    parser = argparse.ArgumentParser(description="Лабораторная №6")#argparse автоматически понимает, какую подкоманду ты вызвала, и передаёт управление в нужную часть программы
+    subparsers = parser.add_subparsers(dest="command")#subparsers позволяет программе иметь несколько разных команд
 
-    cat_parser = subparsers.add_parser("cat", help="Вывести содержимое файла")
+    cat_parser = subparsers.add_parser("cat", help="Вывести содержимое файла")#предусматривает обязательный аргумент --input, который задаёт путь к читаемому файлу
     cat_parser.add_argument("--input", required=True) 
     cat_parser.add_argument("-n", action="store_true", help="Нумеровать строки")
 
     stats_parser = subparsers.add_parser("stats", help="Частоты слов")
     stats_parser.add_argument("--input", required=True)
-    stats_parser.add_argument("--top", type=int, default=5) 
+    stats_parser.add_argument("--top", type=int, default=5)#сколько слов выводить, по умолчанию 5
 
-    args = parser.parse_args() 
+    args = parser.parse_args() #читает аргументы командной строки и в зависимости от команды запускает нужную функцию
     if args.command == "cat":
         cat_command(args.input, args.n)
     elif args.command == "stats":
@@ -500,6 +500,7 @@ from cli_text import check_file
 
 
 def main():
+    # создааем подкоманды
     parser = argparse.ArgumentParser(description="Конвертеры данных")
     sub = parser.add_subparsers(dest="command", required=True) 
     
@@ -515,7 +516,7 @@ def main():
     p3.add_argument("--in", dest="input", required=True, help="Входной CSV файл")
     p3.add_argument("--out", dest="output", required=True, help="Выходной XLSX файл")
     
-    args = parser.parse_args()
+    args = parser.parse_args()#аргументы командной строки помещаются в объект args
 
     
     if args.command == "json2csv":
