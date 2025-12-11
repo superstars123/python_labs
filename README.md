@@ -643,7 +643,7 @@ def csv_to_json(csv_path: str, json_path: str) -> None:
 import sys
 import os
 
-os.chdir("C:/Users/1/python_labs")
+os.chdir("C:/Users/1/python_labs") #меняет текущую рабочую директорию процесса на указанный путь
 sys.path.insert(0, os.getcwd())
 
 import pytest
@@ -687,6 +687,7 @@ def test_csv_to_json_roundtrip(tmp_path: Path):
 
 
 @pytest.mark.parametrize(
+    '''Тест на обработку ошибок'''
     "function, input_file, error",
     [
         (json_to_csv, "people.json", ValueError),
@@ -718,13 +719,13 @@ black --check .
 ## ООП, dataclass и сериализация JSON (Python)
 ### Задание А (models.py)
 ```python
-from dataclasses import dataclass
+from dataclasses import dataclass #удобный декоратор для автоматического создания методов (__init__, __repr__ и т.д.) в классах с полями.
 from datetime import datetime, date
 import json
-from typing import Dict, Any
+from typing import Dict, Any #типы из typing для подсказок типов (аннотаций)
 
 
-@dataclass
+@dataclass #автоматически создаёт конструктор __init__ и другие стандартные методы
 class Student:
     fio: str
     birthdate: str
@@ -732,7 +733,7 @@ class Student:
     gpa: float
 
     def __post_init__(self):
-        """Валидация данных после инициализации"""
+        """проверка данных после создания экземпляра"""
         try:
             datetime.strptime(self.birthdate, "%Y-%m-%d")
         except ValueError:
@@ -757,7 +758,7 @@ class Student:
         return age
 
     def to_dict(self) -> Dict[str, Any]:
-        """Сериализация объекта в словарь"""
+        """Преобразует объекта в словарь"""
         return {
             "fio": self.fio,
             "birthdate": self.birthdate,
@@ -767,6 +768,7 @@ class Student:
 
     @classmethod
     def from_dict(cls, data):
+        '''Cоздание из словаря'''
         return cls(
             fio=data.get("fio") or data.get("name"),
             birthdate=data["birthdate"],
@@ -799,7 +801,7 @@ from models import Student
 
 
 def students_to_json(students: List[Student], path: str) -> None:
-    """Сериализация"""
+    """Сериализация (строки, числа, списки, словари и т.д.)."""
     data = [student.to_dict() for student in students]
 
     with open(path, "w", encoding="utf-8") as f:
@@ -807,7 +809,7 @@ def students_to_json(students: List[Student], path: str) -> None:
 
 
 def students_from_json(path: str) -> List[Student]:
-    """Десериализация"""
+    """Десериализация-распаковка, то есть восстановление объекта из JSON обратно в нормальный объект Python."""
     try:
         with open(path, "r", encoding="utf-8") as f:
             data = json.load(f)
