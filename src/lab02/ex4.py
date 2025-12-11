@@ -5,7 +5,7 @@ def transpose(mat: list[list[float | int]]) -> list[list]:
     rw_len = len(mat[0])
     for rw in mat:
         if len(rw) != rw_len:
-            raise 'ValueError'
+            raise "ValueError"
 
     rw, cl = len(mat), rw_len
     result = []

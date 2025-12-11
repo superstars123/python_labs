@@ -1,5 +1,6 @@
 def row_sums(mat: list[list[float | int]]) -> list[float]:
-    if not mat or any(len(row) != len(mat[0]) for row in mat): raise ValueError
+    if not mat or any(len(row) != len(mat[0]) for row in mat):
+        raise ValueError
     return [float(sum(row)) for row in mat]
 
 
