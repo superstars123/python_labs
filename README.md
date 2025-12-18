@@ -855,3 +855,558 @@ if __name__ == "__main__":
 ![Картинка 2](src/laba_8/image/ex2.png)
 
 
+## Лабораторная работа 8
+## ООП, dataclass и сериализация JSON (Python)
+### Задание А (models.py)
+```python
+from dataclasses import dataclass #удобный декоратор для автоматического создания методов (__init__, __repr__ и т.д.) в классах с полями.
+from datetime import datetime, date
+import json
+from typing import Dict, Any #типы из typing для подсказок типов (аннотаций)
+
+
+@dataclass #автоматически создаёт конструктор __init__ и другие стандартные методы
+class Student:
+    fio: str
+    birthdate: str
+    group: str
+    gpa: float
+
+    def __post_init__(self):
+        """проверка данных после создания экземпляра"""
+        try:
+            datetime.strptime(self.birthdate, "%Y-%m-%d")
+        except ValueError:
+            raise ValueError(f"Invalid date format: {self.birthdate}. Use YYYY-MM-DD")
+
+        # Валидация среднего балла
+        if not (0 <= self.gpa <= 5):
+            raise ValueError(f"GPA must be between 0 and 5, got {self.gpa}")
+
+    def age(self) -> int:
+        """Вычисление возраста студента"""
+        birth_date = datetime.strptime(self.birthdate, "%Y-%m-%d").date()
+        today = date.today()
+        age = today.year - birth_date.year
+
+        # Корректировка, если день рождения еще не наступил в этом году
+        if today.month < birth_date.month or (
+            today.month == birth_date.month and today.day < birth_date.day
+        ):
+            age -= 1
+
+        return age
+
+    def to_dict(self) -> Dict[str, Any]:
+        """Преобразует объекта в словарь"""
+        return {
+            "fio": self.fio,
+            "birthdate": self.birthdate,
+            "group": self.group,
+            "gpa": self.gpa,
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        '''Cоздание из словаря'''
+        return cls(
+            fio=data.get("fio") or data.get("name"),
+            birthdate=data["birthdate"],
+            group=data["group"],
+            gpa=data.get("gpa") or data.get("grade"),
+        )
+
+    def __str__(self) -> str:
+        """Строковое представление объекта"""
+        return f"Студент: {self.fio}, Группа: {self.group}, GPA: {self.gpa}, Возраст: {self.age()} лет"
+
+
+if __name__ == "__main__":
+    try:
+        student = Student(
+            fio="Иванов Иван Иванович", birthdate="2000-05-15", group="SE-01", gpa=4.5
+        )
+        print(student)
+        print(f"Словарь: {student.to_dict()}")
+    except ValueError as e:
+        print(f"Ошибка: {e}")
+
+```
+![Картинка 1](src/laba_8/image/ex1.png)
+### Задание B
+```python
+import json
+from typing import List
+from models import Student
+
+
+def students_to_json(students: List[Student], path: str) -> None:
+    """Сериализация"""
+    data = [student.to_dict() for student in students]
+
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+
+def students_from_json(path: str) -> List[Student]:
+    """Десериализация"""
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+
+        students = []
+        for item in data:
+            try:
+                student = Student.from_dict(item)
+                students.append(student)
+            except (ValueError, KeyError) as e:
+                print(f"Ошибка при создании студента из данных {item}: {e}")
+                continue
+
+        return students
+
+    except FileNotFoundError:
+        print(f"Файл {path} не найден")
+        return []
+
+    except json.JSONDecodeError:
+        print(f"Ошибка декодирования JSON из файла {path}")
+        return []
+
+
+if __name__ == "__main__":
+    # Пример студентов
+    students = [
+        Student("Иванов Иван", "2000-05-15", "SE-01", 4.5),
+        Student("Петрова Анна", "2001-08-22", "SE-02", 3.8),
+        Student("Сидоров Алексей", "1999-12-10", "SE-01", 4.2),
+    ]
+
+    # Сохранение
+    students_to_json(students, "data/students_output.json")
+
+    # Загрузка
+    loaded_students = students_from_json("data/students_input.json")
+
+    for student in loaded_students:
+        print(student)
+
+
+```
+![Картинка 2](src/laba_8/image/ex2.png)
+### Лабораторная работа 9
+### A
+```python
+import csv
+from pathlib import Path
+from typing import List, Dict, Any
+
+try:
+    from src.laba_8.models import Student
+except ImportError:
+
+    class Student:
+        def __init__(self, fio: str, birthdate: str, group: str, gpa: float):
+            self.fio = fio
+            self.birthdate = birthdate
+            self.group = group
+            self.gpa = gpa
+
+        def __repr__(self):
+            return f"Student(fio='{self.fio}', birthdate='{self.birthdate}', group='{self.group}', gpa={self.gpa})"
+
+        def __str__(self):
+            return f"{self.fio}, {self.birthdate}, {self.group}, GPA: {self.gpa}"
+
+        def to_dict(self):
+            return {
+                "fio": self.fio,
+                "birthdate": self.birthdate,
+                "group": self.group,
+                "gpa": str(self.gpa),
+            }
+
+        @classmethod
+        def from_dict(cls, data):
+            return cls(
+                data["fio"], data["birthdate"], data["group"], float(data["gpa"])
+            )
+
+
+class Group:
+    HEADER = ["fio", "birthdate", "group", "gpa"]
+
+    def __init__(self, storage_path: str):
+        self.path = Path(storage_path)
+        self._ensure_storage_exists()
+
+    def _ensure_storage_exists(self):
+        """Создаёт файл с заголовком, если его нет."""
+        if not self.path.exists():
+            self.path.parent.mkdir(parents=True, exist_ok=True)
+            with open(self.path, "w", newline="", encoding="utf-8") as f:
+                csv.DictWriter(f, fieldnames=self.HEADER).writeheader()
+
+    def _read_rows(self) -> List[Dict]:
+        with open(self.path, "r", encoding="utf-8") as f:
+            return list(csv.DictReader(f))
+
+    def _write_rows(self, rows: List[Dict]):
+        with open(self.path, "w", newline="", encoding="utf-8") as f:
+            writer = csv.DictWriter(f, fieldnames=self.HEADER)
+            writer.writeheader()
+            writer.writerows(rows)
+
+    def exists(self, fio: str) -> bool:
+        """Проверяет, существует ли студент с таким ФИО."""
+        return any(row["fio"] == fio for row in self._read_rows())
+
+    def list(self) -> List[Student]:
+        return [Student.from_dict(row) for row in self._read_rows()]
+
+    def add(self, student: Student):
+        rows = self._read_rows()
+        if any(row["fio"] == student.fio for row in rows):
+            raise ValueError(f"Студент '{student.fio}' уже существует")
+        rows.append(student.to_dict())
+        self._write_rows(rows)
+
+    def find(self, substr: str) -> List[Student]:
+        rows = [r for r in self._read_rows() if substr.lower() in r["fio"].lower()]
+        return [Student.from_dict(row) for row in rows]
+
+    def remove(self, fio: str) -> bool:
+        rows = self._read_rows()
+        new_rows = [r for r in rows if r["fio"] != fio]
+        if len(new_rows) != len(rows):
+            self._write_rows(new_rows)
+            return True
+        return False
+
+    def update(self, fio: str, **fields) -> bool:
+        rows = self._read_rows()
+        updated = False
+
+        for row in rows:
+            if row["fio"] == fio:
+                for key, value in fields.items():
+                    if key in self.HEADER:
+                        row[key] = str(value) if key == "gpa" else value
+                updated = True
+
+        if updated:
+            self._write_rows(rows)
+        return updated
+
+    def print_with_age(self, current_year: int = 2025):
+        """Выводит всех студентов с возрастом"""
+        students = self.list()
+        for student in students:
+            birth_year = int(student.birthdate.split(".")[0])
+            age = current_year - birth_year
+            print(
+                f"Студент: {student.fio}, Группа: {student.group}, GPA: {student.gpa}, Возраст: {age}"
+            )
+
+    def stats(self) -> Dict[str, Any]:
+        students = self.list()
+        if not students:
+            return {
+                "count": 0,
+                "min_gpa": None,
+                "max_gpa": None,
+                "avg_gpa": None,
+                "groups": {},
+                "top_5_students": [],
+            }
+
+        gpas = [s.gpa for s in students]
+        groups = {}
+        for s in students:
+            groups[s.group] = groups.get(s.group, 0) + 1
+
+        sorted_students = sorted(students, key=lambda s: s.gpa, reverse=True)
+
+        return {
+            "count": len(students),
+            "min_gpa": min(gpas),
+            "max_gpa": max(gpas),
+            "avg_gpa": round(sum(gpas) / len(students), 2),
+            "groups": groups,
+            "top_5_students": [
+                {"fio": s.fio, "gpa": s.gpa} for s in sorted_students[:5]
+            ],
+        }
+
+    def __str__(self):
+        students = self.list()
+        if not students:
+            return "Группа пуста"
+        return "\n".join(
+            [
+                f"Всего студентов: {len(students)}",
+                *[
+                    f"{i+1}. {s.fio} | {s.birthdate} | {s.group} | GPA: {s.gpa}"
+                    for i, s in enumerate(students)
+                ],
+            ]
+        )
+
+
+if __name__ == "__main__":
+    group = Group("data/lab09/students.csv")
+    group._write_rows([])
+
+    # СПИСОК ДЛЯ ДОБАВЛЕНИЯ
+    students_to_add = [
+        Student("Макаров Георгий Васильевич", "2006.12.16", "BIVT-25", 4.6),
+        Student("Ильин Илья Ильич", "2007.03.16", "BIVT-24", 4.5),
+        Student("Петрова София Алексеевна", "2005.01.01", "BIVT-23", 4.9),
+    ]
+
+    # БЕЗОПАСНОЕ ДОБАВЛЕНИЕ (без ошибок)
+    for s in students_to_add:
+        if not group.exists(s.fio):
+            group.add(s)
+            print(f"Добавлен: {s.fio}")
+        else:
+            print(f"Студент {s.fio} уже существует — пропускаю.")
+
+    group.print_with_age()
+    # group.remove("Алексеев Алексей Алексеевич")
+    # print(f"\nПосле удаления Алексеева, всего студентов: {len(group.list())}")
+    # group.print_with_age()
+
+    # group.remove("Петров Пётр Петрович")
+    # group.print_with_age()
+
+    # group.update("Николаев Николай Николаевич", gpa=4.9)
+    # group.print_with_age()
+    group.remove("Алексеев Алексей Алексеевич")
+    print(f"\nПосле удаления Алексеева, всего студентов: {len(group.list())}")
+    print("Студенты:")
+    for student in group.list():
+        print(f"  {student}")
+
+    print("\nПоиск по 'Петрова':")
+    for student in group.find("Петрова"):
+        print(f"  {student}")
+
+    print("\nСтатистика:")
+    stats = group.stats()
+    for key, value in stats.items():
+        if key == "top_5_students":
+            print(f"  {key}:")
+            for student in value:
+                print(f"    {student['fio']} - GPA: {student['gpa']}")
+        else:
+            print(f"  {key}: {value}")
+
+```
+![Картинка 1](src/laba_9/image/ex1.png)
+
+
+## Лабораторная работа 10
+## Задание 1
+```python
+from collections import deque
+
+
+class Stack:
+    def __init__(self, array=None):
+        self._data = array if array is not None else []
+
+    def push(self, item):
+        """Добавить элемент в стек"""
+        self._data.append(item)
+
+    def pop(self):
+        """Удалить и вернуть верхний элемент"""
+        if self.is_empty():
+            raise IndexError("Нельзя удалить из пустого стека")
+        return self._data.pop()
+
+    def peek(self):
+        """Посмотреть верхний элемент без удаления"""
+        if self.is_empty():
+            return None
+        return self._data[-1]
+
+    def is_empty(self):
+        """Проверить, пуст ли стек"""
+        return len(self._data) == 0
+
+    def __len__(self):
+        """Вернуть количество элементов"""
+        return len(self._data)
+
+    def __str__(self):
+        """Строковое представление стека"""
+        return str(self._data)
+
+
+class Queue:
+    def __init__(self, array=None):
+        self._data = deque(array if array is not None else [])
+
+    def enqueue(self, item):
+        """Добавить элемент в очередь"""
+        self._data.append(item)
+
+    def dequeue(self):
+        """Удалить и вернуть первый элемент"""
+        if self.is_empty():
+            raise IndexError("Нельзя удалить из пустой очереди")
+        return self._data.popleft()
+
+    def peek(self):
+        """Посмотреть первый элемент без удаления"""
+        if self.is_empty():
+            return None
+        return self._data[0]
+
+    def is_empty(self):
+        """Проверить, пуста ли очередь"""
+        return len(self._data) == 0
+
+    def __len__(self):
+        """Вернуть количество элементов"""
+        return len(self._data)
+
+    def __str__(self):
+        """Строковое представление очереди"""
+        return str(list(self._data))
+
+
+if __name__ == "__main__":
+    print("Тестирование")
+    s = Stack()
+    s.push(8)
+    print(f"Удален из стека: {s.pop()}")
+    print(f"Просмотр пустого стека: {s.peek()}")
+    print(f"Длина стека: {len(s)}")
+    print(f"Стек пуст? {s.is_empty()}")
+    que = Queue()
+    que.enqueue(4)
+    print(f"Удален из очереди: {que.dequeue()}")
+    print(f"Просмотр пустой очереди: {que.peek()}")
+    print(f"Длина очереди: {len(que)}")
+    print(f"Очередь пуста? {que.is_empty()}")
+```
+
+![Картинка 1](src/laba_10/image/ex1.png)
+## Задание 2
+``` python
+from typing import Any, Optional, Iterator
+
+
+class Node:
+    def __init__(self, value: Any, next_node: Optional["Node"] = None) -> None:
+        self.value = value
+        self.next = next_node
+
+    def __repr__(self) -> str:
+        return f"[{self.value}]"
+
+
+class SinglyLinkedList:
+    def __init__(self) -> None:
+        self.head: Optional[Node] = None
+        self.tail: Optional[Node] = None
+        self._size: int = 0
+
+    def append(self, value: Any) -> None:
+        """Добавить элемент в конец списка за O(1)."""
+        new_node = Node(value)
+        if self.tail is None:
+            self.head = self.tail = new_node
+        else:
+            self.tail.next = new_node
+            self.tail = new_node
+        self._size += 1
+
+    def prepend(self, value: Any) -> None:
+        """Добавить элемент в начало списка за O(1)."""
+        new_node = Node(value, self.head)
+        self.head = new_node
+        if self.tail is None:
+            self.tail = new_node
+        self._size += 1
+
+    def insert(self, idx: int, value: Any) -> None:
+        """Вставить элемент по индексу idx.
+        Допустимые индексы: от 0 до len(self) включительно.
+        """
+        if idx < 0 or idx > len(self):
+            raise IndexError("list index out of range")
+        if idx == 0:
+            self.prepend(value)
+            return
+        if idx == len(self):
+            self.append(value)
+            return
+        current = self.head
+        for _ in range(idx - 1):
+            assert current is not None
+            current = current.next
+        new_node = Node(value, current.next)
+        current.next = new_node
+        self._size += 1
+
+    def remove_at(self, idx: int) -> None:
+        """Удалить элемент по индексу."""
+        if idx < 0 or idx >= len(self):
+            raise IndexError("list index out of range")
+        if idx == 0:
+            assert self.head is not None
+            self.head = self.head.next
+            if self.head is None:
+                self.tail = None
+            self._size -= 1
+            return
+        current = self.head
+        for _ in range(idx - 1):
+            assert current is not None
+            current = current.next
+        assert current is not None and current.next is not None
+        current.next = current.next.next
+        if current.next is None:
+            self.tail = current
+        self._size -= 1
+
+    def __iter__(self) -> Iterator[Any]:
+        """Итерация по значениям списка (от головы к хвосту)."""
+        current = self.head
+        while current:
+            yield current.value
+            current = current.next
+
+    def __len__(self) -> int:
+        return self._size
+
+    def __repr__(self) -> str:
+        return f"SinglyLinkedList({list(self)})"
+
+    def display(self) -> str:
+        """Красивый вывод: [A] -> [B] -> [C] -> None"""
+        if self.head is None:
+            return "None"
+        parts = []
+        current = self.head
+        while current:
+            parts.append(f"[{current.value}]")
+            current = current.next
+        return " -> ".join(parts) + " -> None"
+
+
+if __name__ == "__main__":
+    lst = SinglyLinkedList()
+    lst.append(1)
+    lst.append(2)
+    lst.prepend(0)
+    lst.insert(2, 1.5)
+    lst.remove_at(3)
+    print(lst)
+    print(lst.display())
+```
+![Картинка 2](src/laba_10/image/ex2.png)
