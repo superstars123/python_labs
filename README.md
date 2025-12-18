@@ -1173,15 +1173,6 @@ if __name__ == "__main__":
             print(f"Студент {s.fio} уже существует — пропускаю.")
 
     group.print_with_age()
-    # group.remove("Алексеев Алексей Алексеевич")
-    # print(f"\nПосле удаления Алексеева, всего студентов: {len(group.list())}")
-    # group.print_with_age()
-
-    # group.remove("Петров Пётр Петрович")
-    # group.print_with_age()
-
-    # group.update("Николаев Николай Николаевич", gpa=4.9)
-    # group.print_with_age()
     group.remove("Алексеев Алексей Алексеевич")
     print(f"\nПосле удаления Алексеева, всего студентов: {len(group.list())}")
     print("Студенты:")
