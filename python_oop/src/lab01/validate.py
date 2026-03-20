@@ -1,30 +1,27 @@
-def validate_name(name):
+def check_name(name):
     if not isinstance(name, str):
         raise TypeError("Имя должно быть строкой")
     if not name.strip():
         raise ValueError("Имя не может быть пустым")
     return name
 
+def check_health(hp):
+    if not isinstance(hp, int):
+        raise TypeError("HP должен быть int")
+    if hp < 0:
+        raise ValueError("HP не может быть < 0")
+    return hp
 
-def validate_health(health):
-    if not isinstance(health, int):
-        raise TypeError("Здоровье должно быть целым числом")
-    if health < 0:
-        raise ValueError("Здоровье не может быть отрицательным")
-    return health
+def check_level(lvl):
+    if not isinstance(lvl, int):
+        raise TypeError("Level должен быть int")
+    if not (1 <= lvl <= 100):
+        raise ValueError("Level должен быть 1-100")
+    return lvl
 
-
-def validate_level(level):
-    if not isinstance(level, int):
-        raise TypeError("Уровень должен быть целым числом")
-    if level <= 0 or level > 100:
-        raise ValueError("Уровень должен быть от 1 до 100")
-    return level
-
-
-def validate_experience(exp):
+def check_exp(exp):
     if not isinstance(exp, int):
-        raise TypeError("Опыт должен быть целым числом")
+        raise TypeError("Exp должен быть int")
     if exp < 0:
-        raise ValueError("Опыт не может быть отрицательным")
+        raise ValueError("Exp не может быть < 0")
     return exp

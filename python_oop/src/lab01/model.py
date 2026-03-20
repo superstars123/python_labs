@@ -1,20 +1,18 @@
-from validate import (
-    validate_name,
-    validate_health,
-    validate_level,
-    validate_experience
-)
+from validate import check_name, check_health, check_level, check_exp
+
 class Player:
-    MAX_LEVEL = 100  # атрибут класса
+    MAX_LEVEL = 100
+    EXP_TO_LEVEL = 100
 
-    def __init__(self, name: str, health: int, level: int, experience: int):
-        self._name = validate_name(name)
-        self._health = validate_health(health)
-        self._level = validate_level(level)
-        self._experience = validate_experience(experience)
-        self._active = True  # логическое состояние игрока
+    # ------------------- Конструктор -------------------
+    def __init__(self, name, health, level, exp):
+        self._name = check_name(name)
+        self._health = check_health(health)
+        self._level = check_level(level)
+        self._exp = check_exp(exp)
+        self._alive = True
 
-    # ------------------- properties -------------------
+    # ------------------- Свойства -------------------
     @property
     def name(self):
         return self._name
@@ -25,9 +23,9 @@ class Player:
 
     @health.setter
     def health(self, value):
-        self._health = validate_health(value)
-        if self._health <= 0:
-            self._active = False
+        self._health = check_health(value)
+        if self._health == 0:
+            self._alive = False
 
     @property
     def level(self):
@@ -35,53 +33,65 @@ class Player:
 
     @property
     def experience(self):
-        return self._experience
+        return self._exp
 
     @property
     def active(self):
-        return self._active
+        return self._alive
 
-    # ------------------- magic methods -------------------
+    # ------------------- Магические методы -------------------
     def __str__(self):
-        status = "Активен" if self._active else "Неактивен"
-        return f"Игрок {self._name} | Уровень: {self._level} | HP: {self._health} | {status}"
+        status = "Жив" if self._alive else "Мертв"
+        return f"{self._name} | lvl={self._level} | hp={self._health} | {status}"
 
     def __repr__(self):
-        return f"Player(name='{self._name}', level={self._level})"
+        return f"Player(name='{self._name}', level={self._level}, hp={self._health})"
 
     def __eq__(self, other):
         if not isinstance(other, Player):
             return False
-        return self._name == other._name and self._level == other._level
+        return (
+            self._name == other._name and
+            self._level == other._level and
+            self._health == other._health
+        )
 
-    # ------------------- бизнес-методы -------------------
-    def take_damage(self, damage: int):
-        if not self._active:
-            raise ValueError("Игрок неактивен")
-        if damage < 0:
+    # ------------------- Внутренние методы -------------------
+    def _level_up(self):
+        if self._level >= Player.MAX_LEVEL:
+            return
+        self._level += 1
+        print(f"{self._name} повысил уровень до {self._level}")
+
+    # ------------------- Бизнес-методы -------------------
+    def take_damage(self, dmg):
+        if not self._alive:
+            raise ValueError("Нельзя нанести урон мертвому игроку")
+        if dmg < 0:
             raise ValueError("Урон не может быть отрицательным")
-
-        self._health -= damage
+        self._health -= dmg
         if self._health <= 0:
             self._health = 0
-            self._active = False
+            self._alive = False
+            print(f"{self._name} погиб")
 
-    def gain_experience(self, amount: int):
-        if not self._active:
-            raise ValueError("Игрок неактивен")
-        if amount < 0:
+    def gain_experience(self, value):
+        if not self._alive:
+            raise ValueError("Мертвый игрок не получает опыт")
+        if value < 0:
             raise ValueError("Опыт не может быть отрицательным")
-
-        self._experience += amount
-        while self._experience >= 100:
+        self._exp += value
+        while self._exp >= Player.EXP_TO_LEVEL:
             if self._level >= Player.MAX_LEVEL:
-                self._experience = 0
+                self._exp = 0
                 break
-            self._experience -= 100
-            self._level += 1
+            self._exp -= Player.EXP_TO_LEVEL
+            self._level_up()
 
     def revive(self):
-        if self._active:
+        if self._alive:
             raise ValueError("Игрок уже активен")
         self._health = 100
-        self._active = True
+        self._alive = True
+        print(f"{self._name} воскрешен")
+       
