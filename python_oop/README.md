@@ -46,6 +46,6 @@
 | `gain_experience(amount)` | Добавляет опыт и повышает уровень при достижении 100 EXP |
 
 # Вывод
-![alt text](python_oop/images/lab01/lab1.png)
-![alt text](python_oop/images/lab01/lab1.2.png)
+![alt text](/python_oop\images\lab01\lab1.2.png)
+![alt text](/python_oop/images/lab01/lab1.2.png)
 
