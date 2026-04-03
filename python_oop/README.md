@@ -163,12 +163,7 @@
 4. **Сценарий 4** — магические методы и взаимодействие объектов
 
 Валидация вынесена в `validate.py` что делает код чистым, безопасным и легко тестируемым. Все требования лабораторной работы выполнены, цели достигнуты.
-# 🎮 Player Collection (Python OOP)
 
-![Python](https://img.shields.io/badge/Python-3.x-blue)
-![OOP](https://img.shields.io/badge/Paradigm-OOP-green)
-![Status](https://img.shields.io/badge/Status-Completed-brightgreen)
-![License](https://img.shields.io/badge/License-Educational-lightgrey)
 
 ---
 
@@ -281,7 +276,7 @@
 * вывод через цикл
 * удаление
 * защита от дубликатов
-![1](/python_oop\images\lab02\1.png)
+![1](/python_oop/images/lab02/1.png)
 ---
 
 ### 🔵 Сценарий 2 — Поиск и фильтрация
@@ -294,7 +289,7 @@
 * фильтрация по уровню
 * использование `len()`
 * итерация
-![2](/python_oop\images\lab02\2.png)
+![2](/python_oop/images/lab02/2.png)
 ---
 
 ### 🟣 Сценарий 3 — Индексация и сортировка
@@ -306,7 +301,7 @@
 * удаление по индексу
 * сортировка по уровню
 * сортировка по имени
-![3](/python_oop\images\lab02\3.png)
+![3](/python_oop/images/lab02/3.png)
 ---
 
 ### 🟡 Сценарий 4 — Цепочки операций
@@ -317,7 +312,7 @@
 * `find_by_name().sort_by_level()`
 * `get_high_level(10)[0:2]`
 * комбинации фильтрации и сортировки
-![4](/python_oop\images\lab02\4.png)
+![4](/python_oop/images/lab02/4.png)
 ---
 
 
