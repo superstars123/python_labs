@@ -124,3 +124,8 @@ if __name__ == "__main__":
     scenario2()
     scenario3()
     scenario4()
+
+
+имя
+
+ИмЯ
