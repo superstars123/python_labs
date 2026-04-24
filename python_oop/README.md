@@ -1,5 +1,4 @@
 ﻿# Лабораторная работа №1 - Класс и инкапсуляция (Python 3.x)
-[![Game Over](https://media1.tenor.com/m/kQb5z-x4qpkAAAAC/game-over-insert-coins.gif)](https://media1.tenor.com/m/kQb5z-x4qpkAAAAC/game-over-insert-coins.gif)
 ## Тема
 **Игровая логика** - класс **Player** (Игрок)
 ## Цель работы
