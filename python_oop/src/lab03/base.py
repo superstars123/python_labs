@@ -39,10 +39,16 @@ class Character:
     @property
     def health(self):
         return self._health
+    @health.setter
+    def health(self, value):
+        self._health = value
 
     @property
     def level(self):
         return self._level
+    @property
+    def power(self):
+        return self.health + self.level * 10
 
     # ================= CORE LOGIC =================
     def is_alive(self):

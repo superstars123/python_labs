@@ -1,4 +1,4 @@
-from model import Player, Enemy, PremiumPlayer
+from src.lab03.model import Player, Enemy, PremiumPlayer
 # ===== Коллекция =====
 def print_header(title):
     print("\n" + "=" * 70)

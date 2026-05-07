@@ -1,5 +1,5 @@
-from lab03.validate import check_name, check_health, check_level, check_exp
-from .base import Character
+from src.lab03.validate import check_name, check_health, check_level, check_exp
+from src.lab03.base import Character
 
 
 # ================= PLAYER =================
