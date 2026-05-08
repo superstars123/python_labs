@@ -1,11 +1,9 @@
+
 import sys
 import os
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..")))
-
 from src.lab05.collection import PlayerCollection
 import src.lab05.strategies as st
-
 from src.lab03.base import Character
 
 
