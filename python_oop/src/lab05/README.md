@@ -93,7 +93,7 @@
 - Анна
 - Гоблин
 - Король
-![Сценарий 1] ![Сценарий 1](../../images/lab05/1.png)
+![Сценарий 1](../../images/lab05/1.png)
 ### Результат:
 
 #### Сортировка по здоровью
@@ -133,7 +133,7 @@ for p in col.sort_by(lambda x: x.name):
 ```python
 strong = col.filter_by(lambda x: x.power >= 10)
 ```
-![2](/images/lab05/2.png)
+![Сценарий 2](../../images/lab05/2.png)
 ### Результат:
 
 #### Сильные персонажи (`power >= 10`)
@@ -175,7 +175,7 @@ print(names)
 powers = list(map(lambda x: x.power, col))
 print(powers)
 ```
-![3](/images/lab05/3.png)
+![Сценарий 3](../../images/lab05/3.png)
 ### Результат:
 
 ```python
@@ -215,7 +215,7 @@ res = res.sort_by(lambda x: x.health)
 ```python
 res = res.apply(lambda x: x)
 ```
-![4](/images/lab05/4.png)
+![Сценарий 4](../../images/lab05/4.png)
 ### Результат:
 
 Коллекция последовательно проходит через несколько этапов обработки без изменения основной логики программы.
@@ -242,7 +242,7 @@ boost = BoostStrategy(50)
 for p in col:
     print(boost(p))
 ```
-![5](/images/lab05/5.png)
+![Сценарий 5](../../images/lab05/5.png)
 ### Результат:
 
 Каждый персонаж получает усиление характеристик согласно выбранной стратегии.
