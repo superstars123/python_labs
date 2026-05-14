@@ -52,11 +52,18 @@ class Character:
 
     # ================= CORE LOGIC =================
     def is_alive(self):
-        return self.status == "жив"
-
+        return self.status == "жив" 
     def calculate_power(self):
         """Базовая формула силы (полиморфизм)"""
         return self._level * 10 + self._health
+
+    def display(self) -> str:
+        return str(self)
+
+
+    def score(self) -> float:
+        return float(self.calculate_power())
+
 
     def process(self):
         """Общий интерфейс"""
