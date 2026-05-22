@@ -1,5 +1,4 @@
 from lab04.models import Player, PremiumPlayer
-
 from app import GameApp
 
 from exceptions import (
@@ -30,6 +29,14 @@ class CLI:
         print("0. Выход")
     def show_players(self):
         players = self.app.get_all_players()
+
+        if not players:
+            print("Коллекция пуста.")
+            return
+
+        print("\n--- PLAYERS ---")
+        print("\n".join(str(p) for p in players))
+        print("---------------\n")
 
     print("\n--- PLAYERS ---")
     def print_players(players):
