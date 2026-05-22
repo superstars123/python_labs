@@ -1,4 +1,4 @@
-from src.lab03.base import Character
+from lab03.base import Character
 
 
 class PlayerCollection:
@@ -36,7 +36,7 @@ class PlayerCollection:
     def __iter__(self):
         return iter(self._items)
 
-    def __len__(self):          # 👈 ВОТ ЭТО ТЫ НЕ ДОБАВИЛ
+    def __len__(self):          
         return len(self._items)
 
     def __str__(self):

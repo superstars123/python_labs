@@ -1,0 +1,37 @@
+[
+  {
+    "type": "Player",
+    "name": "Инна",
+    "health": 176,
+    "level": 20,
+    "exp": 101
+  },
+  {
+    "type": "PremiumPlayer",
+    "name": "Алексей",
+    "health": 180,
+    "level": 12,
+    "exp": 90
+  },
+  {
+    "type": "PremiumPlayer",
+    "name": "Мария",
+    "health": 200,
+    "level": 15,
+    "exp": 40
+  },
+  {
+    "type": "Player",
+    "name": "Виктория",
+    "health": 120,
+    "level": 9,
+    "exp": 70
+  },
+  {
+    "type": "Player",
+    "name": "Дарья",
+    "health": 95,
+    "level": 6,
+    "exp": 45
+  }
+]

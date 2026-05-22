@@ -15,8 +15,8 @@ class Scorable(Protocol):
 
 # ================= TYPE VARS =================
 
-T = TypeVar("T")
-R = TypeVar("R")
+T = TypeVar("T") #любой тип (int, str, Player, Enemy…)
+R = TypeVar("R") #тоже любой тип (результат преобразования)
 
 D = TypeVar("D", bound=Displayable)
 S = TypeVar("S", bound=Scorable)
