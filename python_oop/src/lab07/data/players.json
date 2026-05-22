@@ -1,24 +1,10 @@
 [
   {
     "type": "Player",
-    "name": "Инна",
-    "health": 176,
-    "level": 20,
-    "exp": 101
-  },
-  {
-    "type": "PremiumPlayer",
-    "name": "Алексей",
-    "health": 180,
-    "level": 12,
-    "exp": 90
-  },
-  {
-    "type": "PremiumPlayer",
-    "name": "Мария",
-    "health": 200,
-    "level": 15,
-    "exp": 40
+    "name": "Дарья",
+    "health": 95,
+    "level": 7,
+    "exp": 68
   },
   {
     "type": "Player",
@@ -28,10 +14,24 @@
     "exp": 70
   },
   {
+    "type": "PremiumPlayer",
+    "name": "Мария",
+    "health": 200,
+    "level": 15,
+    "exp": 40
+  },
+  {
+    "type": "PremiumPlayer",
+    "name": "Алексей",
+    "health": 180,
+    "level": 12,
+    "exp": 90
+  },
+  {
     "type": "Player",
-    "name": "Дарья",
-    "health": 95,
-    "level": 6,
-    "exp": 45
+    "name": "Иван",
+    "health": 234,
+    "level": 23,
+    "exp": 46
   }
 ]
