@@ -7,3 +7,4 @@
 - **Лабораторная №4** → [lab04](https://github.com/superstars123/python_labs/tree/main/python_oop/src/lab04)
 - **Лабораторная №5** → [lab05](https://github.com/superstars123/python_labs/tree/main/python_oop/src/lab05)
 - **Лабораторная №6** → [lab06](https://github.com/superstars123/python_labs/tree/main/python_oop/src/lab06)
+- **Лабораторная №7** → [lab07](https://github.com/superstars123/python_labs/tree/main/python_oop/src/lab07)
