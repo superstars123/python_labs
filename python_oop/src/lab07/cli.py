@@ -19,29 +19,14 @@ class CLI:
 
         print("\n===== GAME MENU =====")
 
-        print("1. Добавить игрока")
-        print("2. Показать игроков")
+        print("1. Показать игроков")
+        print("2. Добавить игрока")
         print("3. Найти игрока")
         print("4. Удалить игрока")
-        print("5. Фильтр по уровню")
-        print("6. Сортировка")
-        print("7. Добавить опыт")
+        print("5. Сортировка по силе")
+        print("6. Добавить опыт")
         print("0. Выход")
-    def show_players(self):
-        players = self.app.get_all_players()
 
-        if not players:
-            print("Коллекция пуста.")
-            return
-
-        print("\n--- PLAYERS ---")
-        print("\n".join(str(p) for p in players))
-        print("---------------\n")
-
-    print("\n--- PLAYERS ---")
-    def print_players(players):
-        print("\n".join(str(p) for p in players))
-    print("---------------\n")
     # ================= MAIN LOOP =================
 
     def run(self) -> None:
@@ -56,10 +41,10 @@ class CLI:
                 match choice:
 
                     case 1:
-                        self.add_player_ui()
+                        self.show_players_ui()
 
                     case 2:
-                        self.show_players_ui()
+                        self.add_player_ui()
 
                     case 3:
                         self.find_player_ui()
@@ -68,12 +53,9 @@ class CLI:
                         self.delete_player_ui()
 
                     case 5:
-                        self.filter_ui()
+                        self.sort_by_power_ui()
 
                     case 6:
-                        self.sort_ui()
-
-                    case 7:
                         self.add_exp_ui()
 
                     case 0:
@@ -191,48 +173,20 @@ class CLI:
         except PlayerNotFoundError as error:
             print(error)
 
-    # ================= FILTER =================
-
-    def filter_ui(self) -> None:
-
-        try:
-
-            level = int(
-                input("Минимальный уровень: ")
-            )
-
-            result = self.app.filter_by_level(level)
-
-            if not result:
-                print("Игроки не найдены.")
-                return
-
-            for player in result:
-                print(player)
-
-        except ValueError:
-            print("Введите число.")
-
     # ================= SORT =================
 
-    def sort_ui(self) -> None:
+    def sort_by_power_ui(self) -> None:
 
-        print("\n1. По имени")
-        print("2. По уровню")
-        print("3. По здоровью")
-        print("4. По силе")
+        result = self.app.sort_players(4)
 
-        try:
+        if not result:
+            print("Игроки отсутствуют.")
+            return
 
-            mode = int(input("Выберите сортировку: "))
+        print("\n===== SORT BY POWER =====")
 
-            result = self.app.sort_players(mode)
-
-            for player in result:
-                print(player)
-
-        except ValueError:
-            print("Введите число.")
+        for player in result:
+            print(player)
 
     # ================= EXPERIENCE =================
 
